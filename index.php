@@ -26,9 +26,17 @@ class mybot {
     }
 
     function spoof(&$irc, &$data) {
-        global $server;
+        global $server, $tease_users;
         if ($data->channel == $server['channel'].'_bot') {
-            $irc->message(SMARTIRC_TYPE_NOTICE, $server['channel'], $data->message);
+            if (isset($tease_users) && is_array($tease_users)) {
+                foreach ($tease_users as $tease_user) {
+                    if ($tease_user == $data->nick) {
+                        $bonus_message = ' ※'.$data->nick.'です。';
+                    }
+                }
+            }
+
+            $irc->message(SMARTIRC_TYPE_NOTICE, $server['channel'], $data->message . $bonus_message);
         }
     }
 
